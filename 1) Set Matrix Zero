@@ -1,0 +1,118 @@
+1) Set Matrix Zero (LeetCode Problem: 73)
+Problem Statement: Given a matrix if an element in the matrix is 0 then you will have to set its entire column and row to 0 and then return the matrix.
+
+Approach 1: Mark all the row elements and the column elements of a cell to be -1 (marker) when a cell value is 0. 
+Re-iterate through the matrix and set all the values set to -1 as 0. 
+Initially all the rows and columns are set to -1 and not zero, as if marked 0, the positions of the original zeros in the matrix will be lost.
+
+TC: Quadratic
+SC: Constant
+
+Problem: If an element is -1, then the code will malfunction.
+
+class Solution {
+public:
+    int row=0,column=0;
+    void setVal(vector<vector<int>>& mat,int m,int n) {
+        for (int i=0;i<column;i++) {
+            if (mat[m][i]!=0) mat[m][i]=-1;
+        }
+        for (int i=0;i<row;i++) {
+            if (mat[i][n]!=0) mat[i][n]=-1;
+        }
+    }
+    void setZeroes(vector<vector<int>>& mat) {
+        row=mat.size(),column=mat[0].size();
+        for (int i=0;i<row;i++) {
+            for (int j=0;j<column;j++) {
+                if (mat[i][j]==0) setVal(mat,i,j);
+            }
+        }
+        for (int i=0;i<row;i++) {
+            for (int j=0;j<column;j++) {
+                if (mat[i][j]==-1) mat[i][j]=0;
+            }
+        }
+    }
+};
+
+Approach 2: Maintain 2 arrays as markers marking the rows and columns that needs to be set to 0.
+
+TC: Quadratic
+SC: Linear
+
+class Solution {
+public:
+    void setZeroes(vector<vector<int>>& mat) {
+        int m=mat.size(),n=mat[0].size();
+        vector<bool> row(m,false),col(n,false);
+        for (int i=0;i<m;i++) {
+            for (int j=0;j<n;j++) {
+                if (mat[i][j]==0) {
+                    row[i]=true;
+                    col[j]=true;
+                }
+            }
+        }
+        for (int i=0;i<m;i++) {
+            for (int j=0;j<n;j++) {
+                if (row[i] || col[j]) mat[i][j]=0;
+            }
+        }
+    }
+};
+
+Approach 3: Use the values of the first row and the first column as the marker for the entire row and column.
+For position (0,0) maintain a variable to show which action made it zero- whether an element in row 0 or an element in column 0.
+Variable values- 0: no change, 1-row changed, 2-column changed, 3-both changed
+
+TC: Quadratic
+SC: Constant
+
+class Solution {
+public:
+    void setRowZero(vector<vector<int>>& mat,int whichRow,int col) {
+        for (int k=0;k<col;k++) mat[whichRow][k]=0;
+    }
+    void setColZero(vector<vector<int>>& mat,int row,int whichCol) {
+        for (int k=0;k<row;k++) mat[k][whichCol]=0;
+    }
+    void setZeroes(vector<vector<int>>& mat) {
+        int m=mat.size(),n=mat[0].size();
+        int zeroCell=0,zeroRow=0,zeroCol=0;
+        for (int i=0;i<m;i++) {
+            for (int j=0;j<n;j++) {
+                if (mat[i][j]==0) {
+                    if (i==0 && j==0) {
+                        zeroRow=1;
+                        zeroCol=2;
+                        continue;
+                    }
+                    if (i==0) {
+                        zeroRow=1;
+                        continue;
+                    }
+                    if (j==0) {
+                        zeroCol=2;
+                        continue;
+                    }
+                    mat[i][0]=0;
+                    mat[0][j]=0;
+                }
+            }
+        }
+        for (int i=1;i<m;i++) {
+            if (mat[i][0]==0) setRowZero(mat,i,n);
+        }
+        for (int i=1;i<n;i++) {
+            if (mat[0][i]==0) setColZero(mat,m,i);
+        }
+        zeroCell=zeroRow+zeroCol;
+        if (zeroCell==1) setRowZero(mat,0,n);
+        else if (zeroCell==2) setColZero(mat,m,0);
+        else if (zeroCell==3) {
+            setRowZero(mat,0,n);
+            setColZero(mat,m,0);
+        }
+    }
+};
