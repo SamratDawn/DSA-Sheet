@@ -5,3 +5,131 @@ Problem Statement: This problem has 3 variations. They are stated below:
 Variation 1: Given row number r and column number c. Print the element at position (r, c) in Pascal’s triangle.
 Variation 2: Given the row number n. Print the n-th row of Pascal’s triangle.
 Variation 3: Given the number of rows n. Print the first n rows of Pascal’s triangle.
+
+Variation 1: To get the element at (r,c) we need to calculate (r-1)C(c-1) where C=Combination.
+
+Approach 1:
+
+Let a = r-1 and b = c-1
+Then we need to calculate a!,b! and (a-b)! respectively and apply the formula a!/(b!.(a-b)!)
+
+TC: O(a)+O(b)+O(a-b)
+SC: O(1)
+
+Approach 2:
+
+Approach 1 can be time intensive so we realise one thing that
+a!/(b!.(a-b)!) = [a.(a-1).(a-2).....(a-b+1)]/b!
+
+TC: O(c), where c = given column number. 
+Reason: We are running a loop for r times, where r is c-1.
+SC: O(1)
+
+int nCr(int a, int b) {
+    long long res = 1;
+    for (int i=0; i<b; i++) {
+        res=res*(a-i);
+        res=res/(i+1);
+    }
+    return res;
+}
+int pascalTriangle(int r, int c) {
+    int element=nCr(r-1,c-1);
+    return element;
+}
+
+Variation 2: Given the row number n. Print the n-th row of Pascal’s triangle.
+
+Approach 1:
+
+Using variation 1, approach 2, we calculate all the elements of the row in the triangle.
+Row=r-1
+Column=0 to c-1
+
+TC: O(n*r), where n is the given row number, and r is the column index which can vary from 0 to n-1.
+Reason: We are calculating the element for each column. 
+Now, there are total n columns, and for each column, the calculation of the element takes O(r) time where r is the column index.
+SC: O(1)
+
+Approach 2:
+
+For an element we use the formula-
+Current element = prevElement * (rowIndex - colIndex) / colIndex
+[Formula is used from element 1. Element 0 of each row is 1.]
+[All the indexes are 0-indexed.]
+
+TC: O(N)
+SC: O(1)
+
+void pascalTriangle(int n) {
+    long long ans = 1;
+    cout << ans << " "; //for first row element
+    for (int i = 1; i < n; i++) {
+        ans = ans * (n - i);
+        ans = ans / i;
+        cout << ans << " ";
+    }
+    cout << endl;
+}
+
+Variation 3: Given the number of rows n. Print the first n rows of Pascal’s triangle.
+
+Approach 1:
+
+Use variation 1, approach 1 to print all the elements of the Pascal's triangle.
+Here each element is calculated and stored in the result element-wise.
+
+TC: O(n*n*r) ~ O(n3), where n = number of rows, and r = column index.
+Reason: The row loop will run for approximately n times.
+And generating a row using the naive approach of variation 2 takes O(n*r) time complexity.
+SC: O(1).
+
+int nCr(int n, int r) {
+    long long res = 1;
+    for (int i = 0; i < r; i++) {
+        res = res * (n - i);
+        res = res / (i + 1);
+    }
+    return (int)(res);
+}
+
+vector<vector<int>> pascalTriangle(int n) {
+    vector<vector<int>> ans; // for storing the triangle
+    for (int row = 1; row <= n; row++) {
+        vector<int> tempLst; // temporary list
+        for (int col = 1; col <= row; col++) {
+            tempLst.push_back(nCr(row - 1, col - 1));
+        }
+        ans.push_back(tempLst);
+    }
+    return ans;
+}
+
+Approach 2:
+
+Using variation 2, approach 2, to get a row and store it in the result row-wise.
+
+TC: O(n2), where n = number of rows.
+Reason: We are generating a row for each single row. 
+The number of rows is n. And generating an entire row takes O(n) time complexity.
+SC: O(1).
+
+vector<int> generateRow(int row) {
+    long long ans = 1;
+    vector<int> ansRow;
+    ansRow.push_back(1); //inserting the 1st element
+    for (int col = 1; col < row; col++) {
+        ans = ans * (row - col);
+        ans = ans / col;
+        ansRow.push_back(ans);
+    }
+    return ansRow;
+}
+
+vector<vector<int>> pascalTriangle(int n) {
+    vector<vector<int>> ans;
+    for (int row = 1; row <= n; row++) {
+        ans.push_back(generateRow(row));
+    }
+    return ans;
+}
