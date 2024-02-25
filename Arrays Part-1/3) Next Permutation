@@ -1,4 +1,4 @@
-3) Next Permutation
+3) Next Permutation (LeetCode Problem: 31)
 Problem Statement: Given an array Arr[] of integers, rearrange the numbers of the given array into the lexicographically next greater permutation of numbers.
 
 Approach 1: Create a set of all the possible permutations of the given numbers.
