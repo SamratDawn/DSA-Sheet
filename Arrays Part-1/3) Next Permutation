@@ -1,0 +1,96 @@
+3) Next Permutation
+Problem Statement: Given an array Arr[] of integers, rearrange the numbers of the given array into the lexicographically next greater permutation of numbers.
+
+Approach 1: Create a set of all the possible permutations of the given numbers.
+Sort them and find the lexiographically greater permutation performing a linear scan.
+
+TC: O(N.N!)
+SC: O(N!)
+
+Problem: When the value of N increases, the space and time complexities increases exponentially.
+
+class Solution {
+public:
+    set<vector<int>> allUniquePerm;
+    void allPermutations(vector<int>& numsTemp,int curr,int n) {
+        if (curr==n) return;
+        allUniquePerm.insert(numsTemp);
+        for (int i=curr;i<n;i++) {
+            int temp=numsTemp[curr];
+            numsTemp[curr]=numsTemp[i];
+            numsTemp[i]=temp;
+            allPermutations(numsTemp,curr+1,n);
+            temp=numsTemp[curr];
+            numsTemp[curr]=numsTemp[i];
+            numsTemp[i]=temp;
+        }
+    }
+    void nextPermutation(vector<int>& nums) {
+        int n=nums.size();
+        vector<int> temp;
+        temp=nums;
+        sort(nums.begin(),nums.end());
+        allPermutations(nums,0,n);
+        vector<vector<int>> allPerm;
+        for (auto i:allUniquePerm) allPerm.push_back(i);
+        //sort(allPerm.begin(),allPerm.end());
+        int m=allPerm.size();
+        for (int i=0;i<m;i++) {
+            if (allPerm[i]==temp) {
+                if (i!=m-1) nums=allPerm[i+1];
+                else nums=allPerm[0];
+            }
+        }
+    }
+};
+
+Approach 2: Use the C++ STL next_permutation().
+It rearranges the array and returns a boolean value.
+It returns true if it can arrange the array in a greater order else false.
+
+TC: O(N.N!)
+SC: O(1)
+
+class Solution {
+public:
+    void nextPermutation(vector<int>& nums) {
+        next_permutation(nums.begin(),nums.end());
+    }
+};
+
+Approach 3: Find the break-point traversing from the right hand side.
+The break-point is the element that breaks the increasing order as in 2,1,5,4,3- 1 is the breakpoint.
+Swap the breakpoint with the smallest element to its right that is greater than the breakpoint.
+Reverse the entire RHS of the breakpoint and return the array.
+
+TC: O(3N)
+SC: O(1)
+
+class Solution {
+public:
+    void nextPermutation(vector<int>& nums) {
+        int n=nums.size(),bptr=-1;
+        for (int i=n-2;i>=0;i--) {
+            if (nums[i]<nums[i+1]) {
+                bptr=i;
+                break;
+            }
+        }
+        if (bptr==-1) {
+            reverse(nums.begin(),nums.end());
+        }
+        else {
+            int min=INT_MAX,minIndex=0;
+            for (int i=n-1;i>=bptr+1;i--) {
+                if (nums[i]<min && nums[i]>nums[bptr]) {
+                    min=nums[i];
+                    minIndex=i;
+                }
+            }
+            int temp=nums[bptr];
+            nums[bptr]=nums[minIndex];
+            nums[minIndex]=temp;
+            reverse(nums.begin()+bptr+1,nums.end());
+        }
+    }
+};
