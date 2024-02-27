@@ -1,0 +1,65 @@
+4) Kedane's Algorithm
+
+Problem Statement: Given an integer array arr, find the contiguous subarray (containing at least one number) which
+has the largest sum and returns its sum and prints the subarray.
+
+Approach 1:
+
+Find the sum of all the subarrays and calculate the maximum among them.
+
+TC: O(N^3), N^2 for subarray extraction and N for subarray sum calculation
+SC: O(1)
+
+int maxSubarraySum(int arr[], int n) {
+    int maxi = INT_MIN; // maximum sum
+    for (int i = 0; i < n; i++) {
+        for (int j = i; j < n; j++) {
+            // subarray = arr[i.....j]
+            int sum = 0;
+            for (int k = i; k <= j; k++) {
+                sum += arr[k];
+            }
+            maxi = max(maxi, sum);
+        }
+    }
+    return maxi;
+}
+
+Approach 2:
+
+To find the sum of subarrays we just add the incoming element to the previous subarray sum.
+This reduces time complexity as each and every subarray is not required to be discovered.
+
+TC: O(N^2)
+SC: O(1)
+
+int maxSubarraySum(int arr[], int n) {
+    int maxi = INT_MIN; // maximum sum
+    for (int i = 0; i < n; i++) {
+        int sum = 0;
+        for (int j = i; j < n; j++) {
+            // current subarray = arr[i.....j]
+            sum += arr[j];
+            maxi = max(maxi, sum); // getting the maximum
+        }
+    }
+    return maxi;
+}
+
+Approach 3:
+
+This approach maintains two max- local and global and ignores the negative local max values.
+This approach is based on Dynamic Programming.
+
+TC: O(N)
+SC: O(1)
+
+int maxSubarraySum(vector<int>& nums) {
+        int localMax=0,globalMax=INT_MIN,n=nums.size();
+        for (int i=0;i<n;i++) {
+            localMax+=nums[i];
+            if (localMax>globalMax) globalMax=localMax;
+            if (localMax<0) localMax=0;
+        }
+        return globalMax;
+    }
