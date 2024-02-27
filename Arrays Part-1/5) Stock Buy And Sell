@@ -1,0 +1,48 @@
+5) Stock Buy And Sell (LeetCode Problem: 121)
+
+Problem Statement: You are given an array of prices where prices[i] is the price of a given stock on an ith day.
+
+You want to maximize your profit by choosing a single day to buy one stock and choosing a different day in the future to sell that stock. 
+Return the maximum profit you can achieve from this transaction. If you cannot achieve any profit, return 0.
+
+Approach 1:
+
+Using two loops to judge every transactions and get the maximum profit.
+Transaction value= prices[j]-prices[i] where j>i.
+
+TC: O(N^2)
+SC: O(1)
+
+int maxProfit(vector<int> &arr) {
+    int maxPro = 0;
+    int n = arr.size();
+    for (int i = 0; i < n; i++) {
+        for (int j = i + 1; j < n; j++) {
+            if (arr[j] > arr[i]) {
+                maxPro = max(arr[j] - arr[i], maxPro);
+            }
+        }
+    }
+    return maxPro;
+}
+
+Approach 2:
+
+Using a variation of Kedane's algorithm and maintain a local minimum and find the profit wrt to that value.
+Change the local minimum where a lower value arrives. Return the maximum profit saved in another variable.
+
+TC: O(N)
+SC: O(1)
+
+class Solution {
+public:
+    int maxProfit(vector<int>& prices) {
+        int localMin=INT_MAX,n=prices.size(),maxProfit=0;
+        for (int i=0;i<n;i++) {
+            if (prices[i]<localMin) localMin=prices[i];
+            int localProfit=prices[i]-localMin;
+            if (localProfit>maxProfit) maxProfit=localProfit;
+        }
+        return maxProfit;
+    }
+};
