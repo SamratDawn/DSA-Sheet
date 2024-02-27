@@ -51,6 +51,20 @@ Reason: We are calculating the element for each column.
 Now, there are total n columns, and for each column, the calculation of the element takes O(r) time where r is the column index.
 SC: O(1)
 
+int main() {
+    int r = 5;
+    int a = r - 1;
+    //In Pascal's triangle, row number=column number (say b)
+    for (int b = 0; b <= a; b++) { 
+        int res = 1;
+        for (int i = 0; i < b; i++) {
+            res *= (a - i);
+            res /= (i + 1);
+        }
+        cout << res;
+    }
+}
+
 Approach 2:
 
 For an element we use the formula-
