@@ -1,0 +1,41 @@
+1) Rotate Image by 90 degree (LeetCode Problem: 48)
+
+Problem Statement: Given an nxn matrix, your task is to rotate the matrix 90 degrees clockwise.
+
+Approach 1:
+
+Take an auxiliary matrix and copy the first row as the last column and so on.
+
+TC: O(N^2)
+SC: O(N^2)
+
+vector < vector < int >> rotate(vector < vector < int >> & matrix) {
+    int n = matrix.size();
+    vector < vector < int >> rotated(n, vector < int > (n, 0));
+    for (int i = 0; i < n; i++) {
+    	for (int j = 0; j < n; j++) {
+        	rotated[j][n - i - 1] = matrix[i][j];
+    	}
+    }
+    return rotated;
+}
+
+Approach 2:
+
+Transpose the matrix and perform reverse operation on each row.
+
+TC: O(N^2)+O(N^2)- one for transposing and one for reversal
+SC: O(1)
+
+class Solution {
+public:
+    void rotate(vector<vector<int>>& matrix) {
+        int n=matrix.size();
+        for (int i=0;i<n;i++) {
+            for (int j=i;j<n;j++) 
+                swap(matrix[i][j],matrix[j][i]);
+        } //Transpose
+        for (int i=0;i<n;i++)
+            reverse(matrix[i].begin(),matrix[i].end()); //Reverse
+    }
+};
