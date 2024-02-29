@@ -1,0 +1,96 @@
+3) Merge two Sorted Arrays Without Extra Space (LeetCode Problem: 88)
+
+Problem statement: Given two sorted arrays arr1[] and arr2[] of sizes n and m in non-decreasing order. 
+Merge them in sorted order. Modify arr1 so that it contains the first N elements and modify arr2 so that it contains the last M elements.
+
+Approach 1:
+
+Use a third array of size n+m and use two pointers say left and right for arr1 and arr2 respectively.
+Take the min of arr1[left] and arr2[right] and insert it in the array. Increment left or right as required.
+
+TC: O(N+M) + O(N+M)- one for copying and one for writing back into the original arrays.
+SC: O(N+M)
+
+void merge(long long arr1[], long long arr2[], int n, int m) {
+    long long arr3[n + m];
+    int left = 0;
+    int right = 0;
+    int index = 0;
+    while (left < n && right < m) {
+        if (arr1[left] <= arr2[right]) {
+            arr3[index] = arr1[left];
+            left++, index++;
+        }
+        else {
+            arr3[index] = arr2[right];
+            right++, index++;
+        }
+    }
+
+    // If right pointer reaches the end:
+    while (left < n) {
+        arr3[index++] = arr1[left++];
+    }
+    // If left pointer reaches the end:
+    while (right < m) {
+        arr3[index++] = arr2[right++];
+    }
+    for (int i = 0; i < n + m; i++) {
+        if (i < n) arr1[i] = arr3[i];
+        else arr2[i - n] = arr3[i];
+    }
+}
+
+Approach 2:
+
+Have left pointer point at n-1 position of arr1 and right point at 0 position of arr2.
+If (arr[left]>arr[right]) swap the numbers. Else break.
+This ends up giving us all the small elements in arr1 and all the large elements in arr2.
+Finally sort the two arrays individually.
+
+We have to sort both the arrays as arr1 and arr2 are guarenteed to hold the min and max 
+elements but the elements can be out of order.
+
+TC: O(min(N,M))+O(N*logN)+O(M*logM)
+SC: O(1)
+
+void merge(long long arr1[], long long arr2[], int n, int m) {
+    int left = n - 1;
+    int right = 0;
+    while (left >= 0 && right < m) {
+        if (arr1[left] > arr2[right]) {
+            swap(arr1[left], arr2[right]);
+            left--, right++;
+        }
+        else {
+            break;
+        }
+    }
+    sort(arr1, arr1 + n);
+    sort(arr2, arr2 + m);
+}
+
+Note- In LeetCode we have to store the solution in nums1 itself where nums1 is an array of
+size m+n where there are m values followed by n zeroes to be overridden.
+
+class Solution {
+public:
+    void merge(vector<int>& nums1, int m, vector<int>& nums2, int n) {
+        int left=m-1,right=0;
+        while (left>=0 && right<n) {
+            if (nums1[left]>nums2[right]) {
+                swap(nums1[left],nums2[right]);
+                left--;
+                right++;
+            }
+            else break;
+        }
+        sort(nums1.begin(),nums1.begin()+m);
+        sort(nums2.begin(),nums2.end());
+        for (int i=0;i<n;i++) nums1[m+i] = nums2[i];
+    }
+};
+
+Approach 3:
+
+Using gap method based on a sorting technique called shell sort.
