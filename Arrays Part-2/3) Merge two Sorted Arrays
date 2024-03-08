@@ -93,4 +93,55 @@ public:
 
 Approach 3:
 
-Using gap method based on a sorting technique called shell sort.
+Using gap method based on a sorting technique called shell sort. We will consider the
+two different arrays as a single array and will check the elements wrt to each decreasing gap.
+
+First, calculate the gap value as ceil((size of arr1[] + size of arr2[]) / 2).
+
+Continue the operations until the value of the gap becomes 0:
+Place the left pointer at index 0 and the right pointer at index (left+gap).
+Again we will run a loop until the right pointer reaches the end i.e. (n+m). 
+
+Inside the loop, there will be 3 different cases:
+If the left pointer is inside arr1[] and the right pointer is in arr2[]: 
+We will compare arr1[left] and arr2[right-n] and swap them if arr1[left] > arr2[right-n].
+If both the pointers are in arr2[]: 
+We will compare arr1[left-n] and arr2[right-n] and swap them if arr1[left-n] > arr2[right-n].
+If both the pointers are in arr1[]: 
+We will compare arr1[left] and arr2[right] and swap them if arr1[left] > arr2[right].
+
+After the right pointer reaches the end, 
+we will decrease the value of the gap and it will become ceil(current gap / 2). 
+
+TC: O((N+M)*log(N+M))
+SC: O(1)
+
+Note- In LeetCode we have to store the solution in nums1 itself where nums1 is an array of
+size n+m where there are n values followed by m zeroes to be overridden.
+
+class Solution {
+private:
+    void swapIfGreater(vector<int>& nums1, vector<int>& nums2, int left,int right) {
+        if (nums1[left]>nums2[right]) swap(nums1[left],nums2[right]);
+    }
+public:
+    void merge(vector<int>& nums1, int n, vector<int>& nums2, int m) {
+        int len=n+m;
+        int gap=(len/2)+(len%2);
+        while (gap>0) {
+            int left=0,right=left+gap;
+            while (right<len){
+                if (left<n && right>=n) 
+                    swapIfGreater(nums1,nums2,left,right-n);
+                else if (left>=n) //right will be automatically >n 
+                    swapIfGreater(nums2,nums2,left-n,right-n);
+                else 
+                    swapIfGreater(nums1,nums1,left,right);
+                left++,right++;
+            }
+            if (gap==1) break;
+            gap=(gap/2)+(gap%2);
+        }
+        for (int i=0;i<m;i++) nums1[n+i]=nums2[i];
+    }
+};

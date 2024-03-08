@@ -1,0 +1,46 @@
+4) Find the duplicate in an array of N+1 integers (LeetCode Problem: 287)
+
+Problem Statement: Given an array of N + 1 size, where each element is between 1 and N. 
+Assuming there is only one duplicate number, your task is to find the duplicate number.
+
+Approach 1:
+
+Using sorting followed by a linear search. The common element will be adjacent in the
+sorted array.
+
+TC: O(Nlogn + N)
+SC: O(1)
+
+int findDuplicate(vector < int > & arr) {
+  int n = arr.size();
+  sort(arr.begin(), arr.end());
+  for (int i = 0; i < n - 1; i++) {
+    if (arr[i] == arr[i + 1]) {
+      return arr[i];
+    }
+  }
+} 
+
+Approach 2:
+
+Using a frequency array or a map to store the frequency of all the elements from 1 to N.
+If an element doesn't exist (i.e., freq=0) set freq=1.
+Else if the freq=1 (the element already exists) return the element.
+The repeating element will have a frequency of 2.
+
+TC: O(N)
+SC: O(N)
+
+int findDuplicate(vector < int > & arr) {
+  int n = arr.size();
+  int freq[n + 1] = {0}; //setting all the elements as 0
+  for (int i = 0; i < n; i++) {
+    if (freq[arr[i]] == 0) freq[arr[i]] += 1;
+    else return arr[i];
+  }
+  return 0;
+}
+
+Approach 3:
+
+Using a variation of Floyd's Hare and Tortoise Cycle Detection Algorithm.
