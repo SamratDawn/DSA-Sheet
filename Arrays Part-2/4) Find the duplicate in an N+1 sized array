@@ -44,3 +44,50 @@ int findDuplicate(vector < int > & arr) {
 Approach 3:
 
 Using a variation of Floyd's Hare and Tortoise Cycle Detection Algorithm.
+We assume the array elements to be valid indices and traverse as nums[nums[i]] as nums[i]
+will always point to a valid index.
+
+As one element is repeating, a cycle will always exist. The repeating element is the point
+where the cycle begins as two seperate array items are pointing towards it.
+
+We will use a fast and a slow pointer to collide in the cycle.
+Let's assume the starting position is s, the repeating element is r and the point of first
+collision is d.
+
+Let distance(s,d)=a and distance(s,r)=x
+At first collision, distance ran by slow pointer=a and fast pointer=2a, difference=2a-a.
+Now the difference is ran on the cycle itself so 'a' is a multiple of the length of the cycle
+i.e., a=nC.
+
+Let n=1 so C=a.
+Now after first collision we set fast=0 and the slow pointer remains as it was and we increment 
+both by one.
+
+Distance of slow wrt to r = x
+Distance of fast wrt to r = a - (a-x) = x
+a-> length of the cycle
+a-x-> length already traversed by fast on the cycle
+
+So we are guarenteed to find the repeating element when the slow and the fast pointers meet.
+
+TC: O(N)
+SC: O(1)
+
+class Solution {
+public:
+    int findDuplicate(vector<int>& nums) {
+        int tortoise=nums[0],hare=nums[nums[0]];
+	//finding the point of first collision
+        while (nums[tortoise]!=nums[hare]) {
+            tortoise=nums[tortoise];
+            hare=nums[nums[hare]];
+        }
+	//finding the repeating element
+        hare=0;
+        while (hare != tortoise) {
+            hare=nums[hare];
+            tortoise=nums[tortoise];
+        }
+        return hare;
+    }
+};
